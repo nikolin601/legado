@@ -125,6 +125,7 @@ class ReadRssActivity : VMBaseActivity<ActivityRssReadBinding, ReadRssViewModel>
             domStorageEnabled = true
             allowContentAccess = true
             builtInZoomControls = true
+            displayZoomControls = false
             setDarkeningAllowed(AppConfig.isNightTheme)
         }
         binding.webView.addJavascriptInterface(this, "app")
@@ -215,6 +216,7 @@ class ReadRssActivity : VMBaseActivity<ActivityRssReadBinding, ReadRssViewModel>
     }
 
     override fun upStarMenu() {
+        starMenuItem?.isVisible = viewModel.rssArticle != null
         if (viewModel.rssStar != null) {
             starMenuItem?.setIcon(R.drawable.ic_star)
             starMenuItem?.setTitle(R.string.in_favorites)
@@ -275,7 +277,11 @@ class ReadRssActivity : VMBaseActivity<ActivityRssReadBinding, ReadRssViewModel>
             binding.webView.evaluateJavascript("document.documentElement.outerHTML") {
                 val html = StringEscapeUtils.unescapeJson(it)
                     .replace("^\"|\"$".toRegex(), "")
-                viewModel.readAloud(Jsoup.parse(html).textArray().joinToString("\n"))
+                viewModel.readAloud(
+                    Jsoup.parse(html)
+                        .textArray()
+                        .joinToString("\n")
+                )
             }
         }
     }

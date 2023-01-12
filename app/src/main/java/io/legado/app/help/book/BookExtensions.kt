@@ -6,6 +6,7 @@ import android.net.Uri
 import io.legado.app.constant.BookSourceType
 import io.legado.app.constant.BookType
 import io.legado.app.data.appDb
+import io.legado.app.data.entities.BaseBook
 import io.legado.app.data.entities.Book
 import io.legado.app.data.entities.BookSource
 import io.legado.app.exception.NoStackTraceException
@@ -47,6 +48,10 @@ val Book.isEpub: Boolean
 val Book.isUmd: Boolean
     get() {
         return isLocal && originName.endsWith(".umd", true)
+    }
+val Book.isPdf: Boolean
+    get() {
+        return isLocal && originName.endsWith(".pdf", true)
     }
 
 val Book.isOnLineTxt: Boolean
@@ -197,4 +202,11 @@ fun Book.sync(oldBook: Book) {
     durChapterPos = curBook.durChapterPos
     durChapterTitle = curBook.durChapterTitle
     canUpdate = curBook.canUpdate
+}
+
+fun Book.isSameNameAuthor(other: Any?): Boolean {
+    if (other is BaseBook) {
+        return name == other.name && author == other.author
+    }
+    return false
 }

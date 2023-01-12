@@ -15,10 +15,7 @@ import io.legado.app.data.entities.Book
 import io.legado.app.data.entities.BookChapter
 import io.legado.app.data.entities.BookSource
 import io.legado.app.exception.NoStackTraceException
-import io.legado.app.help.book.BookHelp
-import io.legado.app.help.book.getRemoteUrl
-import io.legado.app.help.book.isLocal
-import io.legado.app.help.book.removeType
+import io.legado.app.help.book.*
 import io.legado.app.help.coroutine.Coroutine
 import io.legado.app.lib.webdav.ObjectNotFoundException
 import io.legado.app.model.BookCover
@@ -83,7 +80,7 @@ class BookInfoViewModel(application: Application) : BaseViewModel(application) {
             upCoverByRule(book)
             bookSource = if (book.isLocal) null else
                 appDb.bookSourceDao.getBookSource(book.origin)
-            if (book.tocUrl.isEmpty()) {
+            if (book.tocUrl.isEmpty() && !book.isLocal) {
                 loadBookInfo(book)
             } else if (isImportBookOnLine) {
                 chapterListData.postValue(emptyList())
@@ -153,6 +150,9 @@ class BookInfoViewModel(application: Application) : BaseViewModel(application) {
                 bookSource?.let { bookSource ->
                     WebBook.getBookInfo(this, bookSource, book, canReName = canReName)
                         .onSuccess(IO) {
+                            appDb.bookDao.getBook(book.name, book.author)?.let {
+                                inBookshelf = true
+                            }
                             bookData.postValue(book)
                             if (isImportBookOnLine) {
                                 appDb.searchBookDao.update(book.toSearchBook())
@@ -201,6 +201,10 @@ class BookInfoViewModel(application: Application) : BaseViewModel(application) {
                                 }
                                 appDb.bookChapterDao.delByBook(oldBook.bookUrl)
                                 appDb.bookChapterDao.insert(*it.toTypedArray())
+                                if (book.isSameNameAuthor(ReadBook.book)) {
+                                    ReadBook.book = book
+                                    ReadBook.chapterSize = book.totalChapterNum
+                                }
                             }
                             chapterListData.postValue(it)
                         }.onError {

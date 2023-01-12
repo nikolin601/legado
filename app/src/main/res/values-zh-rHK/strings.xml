@@ -365,7 +365,7 @@
     <string name="status_bar_immersion">狀態欄顏色透明</string>
     <string name="imm_navigation_bar">沉浸式导航栏</string>
     <string name="imm_navigation_bar_s">导航栏颜色透明</string>
-    <string name="add_to_shelf">放入書架</string>
+    <string name="add_to_bookshelf">放入書架</string>
     <string name="continue_read">繼續閲讀</string>
     <string name="cover_path">封面地址</string>
     <string name="page_anim_cover">覆蓋</string>
@@ -657,6 +657,7 @@
     <string name="plus">加</string>
     <string name="system_typeface">系統內置字體樣式</string>
     <string name="delete_book_file">刪除源文件</string>
+    <string name="text_default">默认</string>
     <string name="default1">預設一</string>
     <string name="default2">預設二</string>
     <string name="default3">預設三</string>
@@ -1058,4 +1059,8 @@
     <string name="groups_or_source">多分组/书源</string>
     <string name="replace_state_change">替换(启用/禁用)</string>
     <string name="show_last_update_time">显示上次更新时间</string>
+    <string name="refresh_list">刷新列表</string>
+    <string name="tip_divider_color">分隔线颜色</string>
+    <string name="same_title_removed">移除重复标题</string>
+    <string name="update_book_fail">更新失败</string>
 </resources>

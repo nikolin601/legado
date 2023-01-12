@@ -71,7 +71,7 @@ class CacheViewModel(application: Application) : BaseViewModel(application) {
                         }
                     }
                     cacheChapters[book.bookUrl] = chapterCaches
-                    upAdapterLiveData.postValue(book.bookUrl)
+                    upAdapterLiveData.sendValue(book.bookUrl)
                 }
                 ensureActive()
             }
@@ -97,7 +97,7 @@ class CacheViewModel(application: Application) : BaseViewModel(application) {
         if (exportProgress.contains(book.bookUrl)) return
         exportProgress[book.bookUrl] = 0
         exportMsg.remove(book.bookUrl)
-        upAdapterLiveData.postValue(book.bookUrl)
+        upAdapterLiveData.sendValue(book.bookUrl)
         execute {
             mutex.withLock {
                 while (exportNumber > 0) {
@@ -227,12 +227,12 @@ class CacheViewModel(application: Application) : BaseViewModel(application) {
                 .getContent(
                     book,
                     chapter,
-                    content ?: "null",
+                    content ?: if (chapter.isVolume) "" else "null",
                     includeTitle = !AppConfig.exportNoChapterName,
                     useReplace = useReplace,
                     chineseConvert = false,
                     reSegment = false
-                ).joinToString("\n")
+                ).toString()
             if (AppConfig.exportPictureFile) {
                 //txt导出图片文件
                 val srcList = arrayListOf<Triple<String, Int, String>>()
@@ -260,7 +260,7 @@ class CacheViewModel(application: Application) : BaseViewModel(application) {
         if (exportProgress.contains(book.bookUrl)) return
         exportProgress[book.bookUrl] = 0
         exportMsg.remove(book.bookUrl)
-        upAdapterLiveData.postValue(book.bookUrl)
+        upAdapterLiveData.sendValue(book.bookUrl)
         execute {
             mutex.withLock {
                 while (exportNumber > 0) {
@@ -515,8 +515,7 @@ class CacheViewModel(application: Application) : BaseViewModel(application) {
                         useReplace = useReplace,
                         chineseConvert = false,
                         reSegment = false
-                    )
-                    .joinToString("\n")
+                    ).toString()
                 val title = chapter.getDisplayTitle(
                     contentProcessor.getTitleReplaceRules(),
                     useReplace = useReplace
